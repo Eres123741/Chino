@@ -1,2 +1,0 @@
-# Chino
-Hola
