@@ -4,10 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Clientes - Almanaques</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #4a90e2;
+      --success-color: #2ecc71;
+      --card-bg: #ffffff;
+      --text-main: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border-color: #e1e8ed;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f9;
+      font-family: 'Poppins', sans-serif;
+      
+      /* --- FONDO CON LA PUERTA TORII EN JAPÓN --- */
+      /* El linear-gradient aplica un oscurecimiento del 50% sobre la imagen para resaltar la tarjeta blanca */
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.xtrafondos.com/wallpapers/resolutions/13/puerta-torii-en-japon_4088x2272.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      /* ------------------------------------------ */
+
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -17,97 +36,180 @@
       padding: 20px;
       box-sizing: border-box;
     }
+
     .container {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      padding: 2.5rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* Sombra un poco más fuerte por el fondo oscuro */
       text-align: center;
       width: 100%;
-      max-width: 450px;
+      max-width: 480px;
+      transition: transform 0.3s ease;
     }
-    h2 { color: #333; margin-bottom: 20px; }
+
+    h2 { 
+      color: var(--text-main); 
+      margin-top: 0;
+      margin-bottom: 25px; 
+      font-weight: 700;
+      font-size: 1.6rem;
+    }
+
     input {
       width: 85%;
-      padding: 15px;
-      font-size: 24px;
-      margin-bottom: 20px;
-      border: 2px solid #ccc;
-      border-radius: 5px;
+      padding: 16px;
+      font-size: 22px;
+      margin-bottom: 15px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
       text-align: center;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+      color: var(--text-main);
+      font-weight: 600;
     }
+
     input:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: var(--primary-color);
+      background-color: #fff;
+      box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15);
     }
+
+    input::placeholder {
+      color: #adb5bd;
+      font-weight: 400;
+    }
+
     #mensaje {
-      font-size: 18px;
-      margin-top: 10px;
-      height: 50px;
-      font-weight: bold;
-    }
-    .btn-container {
-      margin-top: 20px;
+      font-size: 16px;
+      margin-top: 5px;
+      height: 48px;
+      font-weight: 600;
       display: flex;
-      gap: 10px;
+      align-items: center;
       justify-content: center;
+      flex-direction: column;
+      line-height: 1.3;
     }
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      color: white;
-      width: 100%;
-    }
-    .btn-export { background-color: #28a745; }
-    .btn-export:hover { background-color: #218838; }
-    
+
     .stats {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 14px;
-      color: #666;
+      color: var(--text-muted);
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 8px;
+      display: inline-block;
     }
 
     /* Estilos para la tabla del Top 500 con Scroll */
     .top500-container {
-      margin-top: 25px;
-      padding-top: 20px;
-      border-top: 2px dashed #eee;
+      margin-top: 30px;
+      padding-top: 25px;
+      border-top: 2px dashed var(--border-color);
     }
+
     .top500-container h3 {
-      font-size: 16px;
-      color: #555;
+      font-size: 15px;
+      color: var(--text-muted);
       margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
     .table-wrapper {
-      max-height: 300px; /* Altura máxima para activar el scroll */
+      max-height: 280px; 
       overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
     }
+
+    /* Custom Scrollbar */
+    .table-wrapper::-webkit-scrollbar {
+      width: 8px;
+    }
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+      border-radius: 0 10px 10px 0;
+    }
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: #c1c1c1; 
+      border-radius: 10px;
+    }
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8; 
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 15px;
+      font-size: 14px;
     }
+
     th, td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border-color);
       text-align: center;
     }
+
     th {
       position: sticky;
       top: 0;
       background-color: #f8f9fa;
-      color: #333;
-      z-index: 1; /* Mantiene el encabezado por encima al hacer scroll */
-      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+      color: var(--text-main);
+      font-weight: 600;
+      z-index: 1; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    tr:nth-child(1) td { font-weight: bold; color: #B8860B; } /* Oro */
-    tr:nth-child(2) td { font-weight: bold; color: #708090; } /* Plata */
-    tr:nth-child(3) td { font-weight: bold; color: #CD7F32; } /* Bronce */
+
+    tr { transition: background-color 0.2s ease; }
+    tr:hover { background-color: #f8fafe; }
+
+    tr:nth-child(1) td { font-weight: 700; color: #B8860B; background-color: #fffaf0; } /* Oro */
+    tr:nth-child(2) td { font-weight: 700; color: #708090; background-color: #f8f9fa; } /* Plata */
+    tr:nth-child(3) td { font-weight: 700; color: #CD7F32; background-color: #fffaf0; } /* Bronce */
+
+    .btn-container {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+    }
+
+    button {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      color: white;
+      width: 100%;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export { 
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-export:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .btn-export:active {
+      transform: translateY(1px);
+    }
+
   </style>
 </head>
 <body>
@@ -116,11 +218,11 @@
     <h2>Registro de Almanaque 📅</h2>
     <input type="number" id="cedula" placeholder="Ingrese Cédula" autofocus autocomplete="off">
     
-    <div id="mensaje">Esperando cliente...</div>
+    <div id="mensaje" style="color: var(--text-muted);">Esperando cliente...</div>
     <div class="stats" id="stats">Total clientes únicos: 0</div>
 
     <div class="top500-container">
-      <h3>🏆 Top 500 Clientes Frecuentes</h3>
+      <h3>🏆 Top 500 Frecuentes</h3>
       <div class="table-wrapper">
         <table>
           <thead>
@@ -137,7 +239,10 @@
     </div>
 
     <div class="btn-container">
-      <button class="btn-export" onclick="exportarCSV()">📥 Descargar Excel de los 500 (CSV)</button>
+      <button class="btn-export" onclick="exportarCSV()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        Descargar Excel (CSV)
+      </button>
     </div>
   </div>
 
@@ -152,44 +257,37 @@
 
     // Función para actualizar contador y el Top 500 en pantalla
     function actualizarInterfaz() {
-      // 1. Actualizar total únicos
       const totalUnicos = Object.keys(clientes).length;
       divStats.innerText = `Total clientes únicos: ${totalUnicos}`;
 
-      // 2. Calcular y dibujar el Top 500
       let listaClientes = [];
       for (let ced in clientes) {
         listaClientes.push({ cedula: ced, visitas: clientes[ced] });
       }
 
-      // Ordenar de mayor a menor
       listaClientes.sort((a, b) => b.visitas - a.visitas);
-
-      // Tomar los primeros 500
       let top500 = listaClientes.slice(0, 500);
 
-      // Limpiar la tabla antes de volver a pintarla
       tbodyTop500.innerHTML = '';
 
       if (top500.length === 0) {
-        tbodyTop500.innerHTML = '<tr><td colspan="3" style="color: #999;">Aún no hay registros</td></tr>';
+        tbodyTop500.innerHTML = '<tr><td colspan="3" style="color: #adb5bd; padding: 20px;">Aún no hay registros</td></tr>';
         return;
       }
 
-      // Renderizar filas
       let filasHTML = '';
       top500.forEach((cliente, index) => {
         let medalla = '';
         if (index === 0) medalla = '🥇';
         else if (index === 1) medalla = '🥈';
         else if (index === 2) medalla = '🥉';
-        else medalla = index + 1;
+        else medalla = `<span style="color: #95a5a6; font-weight: 600;">${index + 1}</span>`;
 
         filasHTML += `
           <tr>
             <td>${medalla}</td>
-            <td>${cliente.cedula}</td>
-            <td>${cliente.visitas}</td>
+            <td style="font-family: monospace; font-size: 15px;">${cliente.cedula}</td>
+            <td><strong style="color: var(--primary-color);">${cliente.visitas}</strong></td>
           </tr>
         `;
       });
@@ -197,45 +295,34 @@
       tbodyTop500.innerHTML = filasHTML;
     }
 
-    // Inicializar interfaz al cargar la página
     actualizarInterfaz();
 
-    // Evento: Presionar Enter
     inputCedula.addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
         const cedula = inputCedula.value.trim();
         
         if (!cedula) return;
 
-        // Sumar o crear
         if (clientes[cedula]) {
           clientes[cedula] += 1;
-          divMensaje.innerHTML = `✅ ¡Visita sumada!<br>Cédula: ${cedula} | Visitas Totales: ${clientes[cedula]}`;
-          divMensaje.style.color = "green";
+          divMensaje.innerHTML = `<span style="color: var(--success-color);">✅ ¡Visita sumada!</span><span style="font-size:14px; color:var(--text-main); margin-top:4px;">Cédula: ${cedula} | Total: ${clientes[cedula]}</span>`;
         } else {
           clientes[cedula] = 1;
-          divMensaje.innerHTML = `🌟 ¡Nuevo cliente registrado!<br>Cédula: ${cedula}`;
-          divMensaje.style.color = "#0056b3";
+          divMensaje.innerHTML = `<span style="color: var(--primary-color);">🌟 ¡Nuevo cliente!</span><span style="font-size:14px; color:var(--text-main); margin-top:4px;">Cédula: ${cedula}</span>`;
         }
 
-        // Guardar y refrescar tabla
         localStorage.setItem('db_clientes', JSON.stringify(clientes));
         actualizarInterfaz();
-
-        // Limpiar input
         inputCedula.value = '';
         
-        // Restaurar mensaje
         setTimeout(() => {
           if(inputCedula.value === '') {
-            divMensaje.innerHTML = 'Esperando cliente...';
-            divMensaje.style.color = "#333";
+            divMensaje.innerHTML = '<span style="color: var(--text-muted);">Esperando cliente...</span>';
           }
         }, 3000);
       }
     });
 
-    // Exportar CSV
     function exportarCSV() {
       if (Object.keys(clientes).length === 0) {
         alert("No hay datos para exportar todavía.");
