@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Clientes - Almanaques</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+    }
+    h2 { color: #333; margin-bottom: 20px; }
+    input {
+      width: 85%;
+      padding: 15px;
+      font-size: 24px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+    input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+    #mensaje {
+      font-size: 18px;
+      margin-top: 10px;
+      height: 50px;
+      font-weight: bold;
+    }
+    .btn-container {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      width: 100%;
+    }
+    .btn-export { background-color: #28a745; }
+    .btn-export:hover { background-color: #218838; }
+    
+    .stats {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Estilos para la tabla del Top 500 con Scroll */
+    .top500-container {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px dashed #eee;
+    }
+    .top500-container h3 {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .table-wrapper {
+      max-height: 300px; /* Altura máxima para activar el scroll */
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa;
+      color: #333;
+      z-index: 1; /* Mantiene el encabezado por encima al hacer scroll */
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+    }
+    tr:nth-child(1) td { font-weight: bold; color: #B8860B; } /* Oro */
+    tr:nth-child(2) td { font-weight: bold; color: #708090; } /* Plata */
+    tr:nth-child(3) td { font-weight: bold; color: #CD7F32; } /* Bronce */
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Registro de Almanaque 📅</h2>
+    <input type="number" id="cedula" placeholder="Ingrese Cédula" autofocus autocomplete="off">
+    
+    <div id="mensaje">Esperando cliente...</div>
+    <div class="stats" id="stats">Total clientes únicos: 0</div>
+
+    <div class="top500-container">
+      <h3>🏆 Top 500 Clientes Frecuentes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Top</th>
+              <th>Cédula</th>
+              <th>Visitas</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-top500">
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <button class="btn-export" onclick="exportarCSV()">📥 Descargar Excel de los 500 (CSV)</button>
+    </div>
+  </div>
+
+  <script>
+    const inputCedula = document.getElementById('cedula');
+    const divMensaje = document.getElementById('mensaje');
+    const divStats = document.getElementById('stats');
+    const tbodyTop500 = document.getElementById('tabla-top500');
+
+    // Cargar datos
+    let clientes = JSON.parse(localStorage.getItem('db_clientes')) || {};
+
+    // Función para actualizar contador y el Top 500 en pantalla
+    function actualizarInterfaz() {
+      // 1. Actualizar total únicos
+      const totalUnicos = Object.keys(clientes).length;
+      divStats.innerText = `Total clientes únicos: ${totalUnicos}`;
+
+      // 2. Calcular y dibujar el Top 500
+      let listaClientes = [];
+      for (let ced in clientes) {
+        listaClientes.push({ cedula: ced, visitas: clientes[ced] });
+      }
+
+      // Ordenar de mayor a menor
+      listaClientes.sort((a, b) => b.visitas - a.visitas);
+
+      // Tomar los primeros 500
+      let top500 = listaClientes.slice(0, 500);
+
+      // Limpiar la tabla antes de volver a pintarla
+      tbodyTop500.innerHTML = '';
+
+      if (top500.length === 0) {
+        tbodyTop500.innerHTML = '<tr><td colspan="3" style="color: #999;">Aún no hay registros</td></tr>';
+        return;
+      }
+
+      // Renderizar filas
+      let filasHTML = '';
+      top500.forEach((cliente, index) => {
+        let medalla = '';
+        if (index === 0) medalla = '🥇';
+        else if (index === 1) medalla = '🥈';
+        else if (index === 2) medalla = '🥉';
+        else medalla = index + 1;
+
+        filasHTML += `
+          <tr>
+            <td>${medalla}</td>
+            <td>${cliente.cedula}</td>
+            <td>${cliente.visitas}</td>
+          </tr>
+        `;
+      });
+      
+      tbodyTop500.innerHTML = filasHTML;
+    }
+
+    // Inicializar interfaz al cargar la página
+    actualizarInterfaz();
+
+    // Evento: Presionar Enter
+    inputCedula.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const cedula = inputCedula.value.trim();
+        
+        if (!cedula) return;
+
+        // Sumar o crear
+        if (clientes[cedula]) {
+          clientes[cedula] += 1;
+          divMensaje.innerHTML = `✅ ¡Visita sumada!<br>Cédula: ${cedula} | Visitas Totales: ${clientes[cedula]}`;
+          divMensaje.style.color = "green";
+        } else {
+          clientes[cedula] = 1;
+          divMensaje.innerHTML = `🌟 ¡Nuevo cliente registrado!<br>Cédula: ${cedula}`;
+          divMensaje.style.color = "#0056b3";
+        }
+
+        // Guardar y refrescar tabla
+        localStorage.setItem('db_clientes', JSON.stringify(clientes));
+        actualizarInterfaz();
+
+        // Limpiar input
+        inputCedula.value = '';
+        
+        // Restaurar mensaje
+        setTimeout(() => {
+          if(inputCedula.value === '') {
+            divMensaje.innerHTML = 'Esperando cliente...';
+            divMensaje.style.color = "#333";
+          }
+        }, 3000);
+      }
+    });
+
+    // Exportar CSV
+    function exportarCSV() {
+      if (Object.keys(clientes).length === 0) {
+        alert("No hay datos para exportar todavía.");
+        return;
+      }
+
+      let listaClientes = [];
+      for (let ced in clientes) {
+        listaClientes.push({ cedula: ced, visitas: clientes[ced] });
+      }
+
+      listaClientes.sort((a, b) => b.visitas - a.visitas);
+      let top500 = listaClientes.slice(0, 500);
+
+      let csvContent = "data:text/csv;charset=utf-8,Cedula,Visitas\n";
+      top500.forEach(row => {
+        csvContent += `${row.cedula},${row.visitas}\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      
+      const fecha = new Date().toISOString().split('T')[0];
+      link.setAttribute("download", `Top_500_Almanaques_${fecha}.csv`);
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
